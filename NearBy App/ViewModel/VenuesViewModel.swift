@@ -13,7 +13,6 @@ struct VenuesViewModel {
     
     let venue = Dynamic([Venue]())
     var locManager = CLLocationManager()
-    var appState = AppState.SingleUpdate
     var navItemTitle = Dynamic("")
     var error = Dynamic("")
     
@@ -32,20 +31,15 @@ struct VenuesViewModel {
     
     mutating func alternateAppState() {
         
-        if appState == .SingleUpdate {
+        if UserDefaults.standard.bool(forKey: ISSINGLEUPDATE) {
             navItemTitle.value = "Single Update"
-            appState = .realTime
+            UserDefaults.standard.set(false, forKey: ISSINGLEUPDATE)
+            UserDefaults.standard.synchronize()
         }else {
             navItemTitle.value = "RealTime"
-            appState = .SingleUpdate
+            UserDefaults.standard.set(true, forKey: ISSINGLEUPDATE)
+            UserDefaults.standard.synchronize()
         }
     }
 }
 
-
-
-//MARK:- states enum
-enum AppState {
-    case realTime
-    case SingleUpdate
-}

@@ -16,7 +16,6 @@ class ViewController: UIViewController {
     
     //MARK:- variables
     var tableState = TableState.loading
-    var appState = AppState.SingleUpdate
     var locManager = CLLocationManager()
     
     var venuesViewModel = VenuesViewModel()
@@ -27,7 +26,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        locManager.requestWhenInUseAuthorization()
+        locManager.requestAlwaysAuthorization()
        
         
         bindViewModel()
@@ -53,7 +52,9 @@ class ViewController: UIViewController {
     func setUpNavBar() {
         
         self.title = "Near By"
-        navigationItem.setRightBarButton(UIBarButtonItem(title: "RealTime", style: .plain, target: self, action: #selector(changeAppMode)), animated: true)
+        var navBtTitile = ""
+        !UserDefaults.standard.bool(forKey: ISSINGLEUPDATE) ? (navBtTitile = "Single Update") : (navBtTitile = "RealTime")
+        navigationItem.setRightBarButton(UIBarButtonItem(title: navBtTitile, style: .plain, target: self, action: #selector(changeAppMode)), animated: true)
     }
     
     @objc func changeAppMode(){
@@ -96,6 +97,7 @@ class ViewController: UIViewController {
         }
     }
     
+    //MARK:- Location Update
     
     func getLocation() {
         
@@ -107,6 +109,7 @@ class ViewController: UIViewController {
         if CLLocationManager.authorizationStatus() == .authorizedWhenInUse ||
             CLLocationManager.authorizationStatus() ==  .authorizedAlways {
             
+            intialLoc = locManager.location
             venuesViewModel.fetchVenues(lat: lat, lon: lon)
         }
     }
@@ -180,16 +183,13 @@ extension ViewController: CLLocationManagerDelegate {
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
 
-        if locations.first != nil {
-            getLocation()
-            if intialLoc == nil  {
-                intialLoc = locations.first
-            }else {
-                if ((intialLoc?.distance(from: locations.first!))! / 1000) > 500 && appState == .realTime {
-                    intialLoc = locations.first
+        if locations.last != nil {
+            guard let loc  = intialLoc else {return}
+            if ((loc.distance(from: locations.last!)) / 1000) > 500 &&
+                !UserDefaults.standard.bool(forKey: ISSINGLEUPDATE) {
+                    self.view.backgroundColor = .black
                     getLocation()
                 }
-            }
         }
     }
     
@@ -207,3 +207,7 @@ enum TableState {
     case error
 }
 
+
+
+
+let ISSINGLEUPDATE = "ISSINGLEUPDATE"
