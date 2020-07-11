@@ -184,7 +184,8 @@ extension ViewController: CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
 
         if locations.last != nil {
-            guard let loc  = intialLoc else {return}
+            guard let loc  = intialLoc else { getLocation()
+                return }
             if ((loc.distance(from: locations.last!)) / 1000) > 500 &&
                 !UserDefaults.standard.bool(forKey: ISSINGLEUPDATE) {
                     self.view.backgroundColor = .black

@@ -18,13 +18,19 @@ struct VenuesViewModel {
     
     func fetchVenues(lat: CLLocationDegrees,lon: CLLocationDegrees){
 
-        APIManager.shared.getNearByPlaces(lat: lat, lon: lon, completed: {(Placesobj, error) in
+        APIManager.shared.getNearByPlaces(lat: lat, lon: lon, completed: {(NearBYOBJ, error) in
             
             
-            guard let places = Placesobj?.response else {self.error.value = error.debugDescription
+            guard let places = NearBYOBJ?.response else {self.error.value = error.debugDescription
                 return
             }
-            self.venue.value = places.venues ?? []
+            
+            let tempObj = places.groups.first?.items
+            var tempArr = [Venue]()
+            for i in tempObj ?? [] {
+                tempArr.append(i.venue)
+            }
+            self.venue.value = tempArr
         })
     }
     

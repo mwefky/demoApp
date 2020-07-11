@@ -7,9 +7,9 @@
 //
 
 import UIKit
+import SDWebImage
 
 class NearByTableViewCell: UITableViewCell {
-
     
     @IBOutlet weak var NBImageView: UIImageView!
     @IBOutlet weak var NBTitle: UILabel!
@@ -19,7 +19,7 @@ class NearByTableViewCell: UITableViewCell {
         didSet {
             NBTitle.text = venue.name
             NBaddress.text = venue.location.address
-            NBImageView.downloaded(from: "\(venue.categories.first?.icon.iconPrefix ?? "")\(venue.categories.first?.icon.suffix ?? "")")
+            getImageURL(id: venue.id)
         }
     }
     
@@ -27,6 +27,18 @@ class NearByTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+    }
+    
+    
+    func getImageURL(id: String){
+        
+        APIManager.shared.getVenuPic(id: id) { (pic, error) in
+            guard let pic = pic else {return}
+            
+            
+            self.NBImageView.sd_setImage(with: URL(string: "\(pic.response.photos.items.first?.itemPrefix ?? "")100*100\(pic.response.photos.items.first?.suffix ?? "")"), completed: nil)
+            
+        }
     }
     
 }

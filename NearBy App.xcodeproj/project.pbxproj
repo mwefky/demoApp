@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		591C87E924BA2F6300907C0C /* photoBaseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 591C87E824BA2F6300907C0C /* photoBaseModel.swift */; };
 		593B822F24B8A4E8004BF71C /* Dynamic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 593B822E24B8A4E8004BF71C /* Dynamic.swift */; };
 		598185AF24B897F200AEF183 /* VenuesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598185AE24B897F200AEF183 /* VenuesViewModel.swift */; };
 		59D6B88C24B8EDB5009D8DFD /* NearByTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D6B88A24B8EDB5009D8DFD /* NearByTableViewCell.swift */; };
@@ -37,6 +38,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		591C87E824BA2F6300907C0C /* photoBaseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = photoBaseModel.swift; sourceTree = "<group>"; };
 		593B822E24B8A4E8004BF71C /* Dynamic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dynamic.swift; sourceTree = "<group>"; };
 		598185AE24B897F200AEF183 /* VenuesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VenuesViewModel.swift; sourceTree = "<group>"; };
 		59D6B88A24B8EDB5009D8DFD /* NearByTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearByTableViewCell.swift; sourceTree = "<group>"; };
@@ -196,6 +198,7 @@
 			isa = PBXGroup;
 			children = (
 				59D6B88E24B8F1E9009D8DFD /* NearByModel.swift */,
+				591C87E824BA2F6300907C0C /* photoBaseModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -382,6 +385,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				593B822F24B8A4E8004BF71C /* Dynamic.swift in Sources */,
+				591C87E924BA2F6300907C0C /* photoBaseModel.swift in Sources */,
 				598185AF24B897F200AEF183 /* VenuesViewModel.swift in Sources */,
 				59FE4D2224B74AC0000ECDFF /* APIManager.swift in Sources */,
 				59FE4D0E24B6005E000ECDFF /* Network.swift in Sources */,

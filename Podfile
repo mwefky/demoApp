@@ -7,6 +7,7 @@ target 'NearBy App' do
 
   # Pods for NearBy App
   pod 'Alamofire'
+  pod 'SDWebImage'
   target 'NearBy AppTests' do
     inherit! :search_paths
   end
