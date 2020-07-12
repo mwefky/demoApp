@@ -8,20 +8,33 @@
 
 import Foundation
 import CoreLocation
+import RxSwift
+
 struct VenuesViewModel {
     
+    var venueVar = Variable([Venue]())
+    var navItemTitleVar = Variable("")
+    var errorVar = Variable("")
     
-    let venue = Dynamic([Venue]())
+    var venue: Observable<([Venue])>{
+        
+        return venueVar.asObservable()
+    }
+    var navItemTitle: Observable<String>{
+        return navItemTitleVar.asObservable()
+    }
+    var error: Observable<String>{
+        return errorVar.asObservable()
+    }
+    
     var locManager = CLLocationManager()
-    var navItemTitle = Dynamic("")
-    var error = Dynamic("")
     
     func fetchVenues(lat: CLLocationDegrees,lon: CLLocationDegrees){
 
         APIManager.shared.getNearByPlaces(lat: lat, lon: lon, completed: {(NearBYOBJ, error) in
             
             
-            guard let places = NearBYOBJ?.response else {self.error.value = error.debugDescription
+            guard let places = NearBYOBJ?.response else {self.errorVar.value = error.debugDescription
                 return
             }
             
@@ -30,7 +43,8 @@ struct VenuesViewModel {
             for i in tempObj ?? [] {
                 tempArr.append(i.venue)
             }
-            self.venue.value = tempArr
+            
+            self.venueVar.value = tempArr
         })
     }
     
@@ -38,11 +52,11 @@ struct VenuesViewModel {
     mutating func alternateAppState() {
         
         if UserDefaults.standard.bool(forKey: ISSINGLEUPDATE) {
-            navItemTitle.value = "Single Update"
+            navItemTitleVar.value = "Single Update"
             UserDefaults.standard.set(false, forKey: ISSINGLEUPDATE)
             UserDefaults.standard.synchronize()
         }else {
-            navItemTitle.value = "RealTime"
+            navItemTitleVar.value = "RealTime"
             UserDefaults.standard.set(true, forKey: ISSINGLEUPDATE)
             UserDefaults.standard.synchronize()
         }

@@ -8,6 +8,8 @@
 
 import UIKit
 import CoreLocation
+import RxSwift
+
 class ViewController: UIViewController {
     
     
@@ -17,17 +19,18 @@ class ViewController: UIViewController {
     //MARK:- variables
     var tableState = TableState.loading
     var locManager = CLLocationManager()
+    var intialLoc: CLLocation?
     
     var venuesViewModel = VenuesViewModel()
     var venues = [Venue]()
+    var disposeBag = DisposeBag()
     
-    var intialLoc: CLLocation?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         locManager.requestAlwaysAuthorization()
-       
+        
         
         bindViewModel()
         setUpNavBar()
@@ -66,7 +69,7 @@ class ViewController: UIViewController {
     //MARK:- binding
     func bindViewModel() {
         
-        venuesViewModel.venue.bind { (vens) in
+        venuesViewModel.venue.subscribe(onNext: { vens in
             DispatchQueue.main.async {
                 [weak self] in
                 if vens.count == 0 {
@@ -78,33 +81,33 @@ class ViewController: UIViewController {
                 self?.tableState = .populated
                 self?.tableView.reloadData()
             }
-        }
+            
+            }).disposed(by: disposeBag)
         
-        venuesViewModel.error.bind { (error) in
+        
+        venuesViewModel.error.subscribe(onNext: { error in
             DispatchQueue.main.async {
-                [weak self] in
+            [weak self] in
                 self?.tableState = .error
                 self?.tableView.reloadData()
             }
-        }
+        }).disposed(by: disposeBag)
         
-        
-        venuesViewModel.navItemTitle.bind { (title) in
+        venuesViewModel.navItemTitle.subscribe(onNext: {title in
             DispatchQueue.main.async {
-                [weak self] in
+            [weak self] in
                 self?.navigationItem.setRightBarButton(UIBarButtonItem(title: title, style: .plain, target: self, action: #selector(self?.changeAppMode)), animated: true)
             }
-        }
+        }).disposed(by: disposeBag)
     }
     
     //MARK:- Location Update
-    
     func getLocation() {
         
         guard let lat = locManager.location?.coordinate.latitude, let lon = locManager.location?.coordinate.longitude else {
             locManager.requestLocation()
             return
-            }
+        }
         tableState = .loading
         if CLLocationManager.authorizationStatus() == .authorizedWhenInUse ||
             CLLocationManager.authorizationStatus() ==  .authorizedAlways {
@@ -168,9 +171,9 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
 extension ViewController: CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-         print("error:: \(error.localizedDescription)")
+        print("error:: \(error.localizedDescription)")
     }
-
+    
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         if status == .authorizedWhenInUse || status == .authorizedAlways {
             locManager.requestLocation()
@@ -180,23 +183,22 @@ extension ViewController: CLLocationManagerDelegate {
             tableView.reloadData()
         }
     }
-
+    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-
+        
         if locations.last != nil {
             guard let loc  = intialLoc else { getLocation()
                 return }
             if ((loc.distance(from: locations.last!)) / 1000) > 500 &&
                 !UserDefaults.standard.bool(forKey: ISSINGLEUPDATE) {
-                    self.view.backgroundColor = .black
-                    getLocation()
-                }
+                getLocation()
+            }
         }
     }
     
-
-}
     
+}
+
 
 
 
