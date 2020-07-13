@@ -1,6 +1,7 @@
 DONE: 
 app functionality using Observable 
+Add RxSwift (DONE)
+ADD UnitTests (DONE)
 
 TODO:
-Add RxSwift (DONE)
-ADD UnitTests
+Code refactoring for more complecicated RxSwift use 
